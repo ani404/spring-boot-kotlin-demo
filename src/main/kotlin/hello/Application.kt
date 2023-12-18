@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import java.util.*
 
 @SpringBootApplication
 class Application {
@@ -12,36 +13,37 @@ class Application {
 	private val log = LoggerFactory.getLogger(Application::class.java)
 
 	@Bean
-	fun init(repository: CustomerRepository) = CommandLineRunner {
-			// save a couple of customers
-			repository.save(Customer("Jack", "Bauer"))
-			repository.save(Customer("Chloe", "O'Brian"))
-			repository.save(Customer("Kim", "Bauer"))
-			repository.save(Customer("David", "Palmer"))
-			repository.save(Customer("Michelle", "Dessler"))
+	fun initData(repository: CustomerRepository) = CommandLineRunner {
+		val customers = listOf(
+			Customer("Jack", "Bauer"),
+			Customer("Chloe", "O'Brian"),
+			Customer("Kim", "Bauer"),
+			Customer("David", "Palmer"),
+			Customer("Michelle", "Dessler")
+		)
 
-			// fetch all customers
-			log.info("Customers found with findAll():")
-			log.info("-------------------------------")
-			repository.findAll().forEach { log.info(it.toString()) }
-			log.info("")
+		repository.saveAll(customers)
 
-			// fetch an individual customer by ID
-			val customer = repository.findById(1L)
-			customer.ifPresent {
-				log.info("Customer found with findById(1L):")
-				log.info("--------------------------------")
-				log.info(it.toString())
-				log.info("")
-			}
-
-			// fetch customers by last name
-			log.info("Customer found with findByLastName('Bauer'):")
-			log.info("--------------------------------------------")
-			repository.findByLastName("Bauer").forEach { log.info(it.toString()) }
-			log.info("")
+		logCustomers("findAll", repository.findAll())
+		logCustomerById(repository.findById(1L))
+		logCustomers("findByLastName('Bauer')", repository.findByLastName("Bauer"))
 	}
 
+	private fun logCustomers(operation: String, customers: Iterable<Customer>) {
+		log.info("Customers found with $operation:")
+		log.info("-------------------------------")
+		customers.forEach { log.info(it.toString()) }
+		log.info("")
+	}
+
+	private fun logCustomerById(customer: Optional<Customer>) {
+		customer.ifPresent {
+			log.info("Customer found with findById(1L):")
+			log.info("--------------------------------")
+			log.info(it.toString())
+			log.info("")
+		}
+	}
 }
 
 fun main() {
