@@ -11,6 +11,7 @@ updates:
       interval: daily
     reviewers:
       - ani404
+      - chhotu05
     pull-request-branch-name:
       separator: "-"
     open-pull-requests-limit: 999
