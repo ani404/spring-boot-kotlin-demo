@@ -18,7 +18,7 @@ class ApplicationTests(@Autowired private val restTemplate: TestRestTemplate) {
 		assertEquals(expectedContent, actualContent)
 	}
 
-	// New test case for creating a customer
+	// New test case for creating a new customer
 	@Test
 	fun createNewCustomer() {
 		val newCustomer = Customer("Tony", "Stark")
